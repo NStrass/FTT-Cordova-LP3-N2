@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<HTML>
+
+<HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <!-- A biblioteca bundle já contem os arquivos JS do Bootstrap, Popper, e jQuery.
+    <script src="js/bootstrap.bundle.js"></script>-->
+    <title>FTT EC LP2 N2!!</title>
+    <LINK REL="stylesheet" HREF="css/bootstrap.css" />
+    <STYLE>
+        .center-txt {
+            text-align: center;
+            color: black;
+            width: 90px;
+            padding: 4px;
+            margin:0;
+            border:0;
+        }
+        .button-selected {
+            background-color: #343a40;
+            color: white;
+            border-radius: 15px;
+        }       
+        .width-button-bar {
+            text-align: center;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-right: 0;
+            margin-left: 0;
+            
+        }
+        .bottom-button-bar {
+            margin:0;
+            padding:0;
+            border:0;
+            width: 100%;
+        }
+        .icon-font {
+            font-size: 40px;   
+        }
+        main {
+            padding-top: 56px;
+            padding-bottom: 50px;
+        }
+    </STYLE>
+    <SCRIPT>
+        var newsSearch = document.getElementById("selectpicker");
+        var newsSearchOne = document.getElementById("selectpickerOne");
+        var newsSearchText;
+        var newsSearchTextOne;
+        var url;
+        
+        //Cria CARDS com os dados do JSON
+        //Referência: https://getbootstrap.com/docs/4.3/components/card/
+        function createNewsCards(nData) { // json retorna um array e navega entre eles e cria as tags da pag, cria o arquivo html, ndata é o json
+
+            for (i in nData) { // 
+                
+                var a = document.createElement("ARTICLE"); // Create a <ARTICLE> element
+                a.setAttribute("class", "card");
+
+               // var nImg = document.createElement("IMG"); // Create a <H2> element
+                
+                var h2 = document.createElement("H2"); // Create a <H2> element
+                h2.setAttribute("class", "card-header");
+                
+                var h3 = document.createElement("H3");
+                h3.setAttribute("class", "card-header");
+                
+                //var desc = document.createElement("P"); // Create a <H2> element
+                var desc = document.createElement("H5"); // Create a <H2> element
+                desc.setAttribute("class", "card-body");
+
+                var ath = document.createElement("P"); // Create a <AUTHOR> element
+                ath.setAttribute("class", "card-header");
+
+                //  nImg.src = nData.articles[i].urlToImage; // Create a text node
+                //nImg.style.width = '100%'; //The full width is 400px, 10px of border left and right
+                h2.innerText = nData[i].title; // Create a text node
+                h3.innerText = nData[i].company;
+                ath.innerText = nData[i].location; // + " - " + nData.articles[i].source.name;
+                desc.innerHTML =  nData[i].description;
+                
+                //a.appendChild(nImg);      
+                a.appendChild(h2); // Append the text to 
+                a.appendChild(h3);                
+                a.appendChild(ath);
+                a.appendChild(desc);
+                
+
+                document.getElementById("aluno").appendChild(a); // document doc html inteiro, nessa busca so retorno um elemento
+
+            } //for
+            
+            // remove imagens quebradas, deixa o card sem imagem
+           // document.querySelectorAll('img').forEach(function(img){
+  	         //    img.onerror = function(){ this.style.display='none'; };
+        //    });
+          
+        } //createNewsCards
+
+        //Busca os dados da API (Serviço REST/JSON - AJAX)
+        function reloadPage() {
+
+            newsSearch = document.getElementById("selectpicker");
+            newsSearchText = newsSearch.options[newsSearch.selectedIndex].value;
+            newsSearchOne = document.getElementById("selectpickerOne");
+            newsSearchTextOne = newsSearchOne.options[newsSearchOne.selectedIndex].value;
+            //url = 'https://jobs.github.com/positions.json?description=' + newsSearchText  + '&full_time=true&location=NewYork' + newsSearchText + '&sortBy=publishedAt&apiKey=' + key;
+            //url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description=python&full_time=true'
+            url = 'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json?description= ' + newsSearchText + '&location=' + newsSearchTextOne;
+            document.getElementById("aluno").innerHTML = ""; //
+            console.log(url); // para debug
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.onload = function() { // funcao anonima
+
+                if (xhr.status >= 200 && xhr.status < 300) { // pra validar se nao deu erro no servidor
+
+                    console.log('success!', JSON.parse(xhr.responseText));
+                    var newsData = JSON.parse(xhr.responseText);  // transforamar em json
+                    createNewsCards(newsData); // passa como parm para a funcao
+
+                } else {
+                    
+                    let error_message= "Ops! Erro!!!<br>" + xhr.statusText;
+                    console.log(error_message);
+                    document.getElementById("aluno").innerHTML = error_message;
+                } //if
+
+                console.log('Here we are...');
+            };
+
+            xhr.open('GET', url); // busca
+            xhr.send(); // realmente executa a funcao reload
+            
+        } //reloadPage
+
+
+
+    </SCRIPT>
+</HEAD>
+
+<BODY lang="pt-br">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <a class="navbar-brand" href="#">&#x1F981; FTT EC LP2 N2!!!</a>
+
+        <div><!-- <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> -->
+            <select class="form-control" onchange="reloadPage();" id="selectpicker"> <!-- select do combobox-->
+               <option value="Integration+Engineer">Integration Engineer</option>
+               <option value="Haskell+Engineer+at+LeapYear+-+Core+Platform" selected>Haskell Engineer at LeapYear - Core Platform</option>
+               <option value="Site+Reliability+Engineer">Site Reliability Engineer</option>
+                <option value="Senior+DevOps+Engineer">Senior DevOps Engineer</option>
+                <option value="Senior+Data+Scientist">Senior Data Scientist</option>
+                <option value="" selected>Selecionar</option>
+           </select>
+        </div>
+        <div>
+             <select class="form-control" onchange="reloadPage();" id="selectpickerOne"> <!-- select do combobox-->
+               <option value="Palo+Alto">Palo Alto</option>
+               <option value="San+Francisco">San Francisco</option>
+               <option value="St.+Petersburg+FL">St. Petersburg FL</option>
+                <option value="Austin,+Texas+">Austin, Texas </option>
+                <option value="London,+UK">London, UK</option>
+                 <option value="" selected>Selecionar</option>
+           </select>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+            <div class="navbar-nav float-right text-right pr-3">
+                <a class="nav-item nav-link" href="index.html">Splash</a>
+                <a class="nav-item nav-link" href="http://www.fundacaosalvadorarena.org.br/" target="newpage">CEFSA</a>
+                <a class="nav-item nav-link" href="about.html">Sobre</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" id="aluno">
+        <hr>
+        <h1><span class="badge badge-success">Projeto da aluna:
+            <h3>Natália A. Strassacapa Reis</h3>
+            <h5>RA:082160040</h5>
+            </span>
+        </h1>
+         
+    </main>
+
+    <nav class="navbar fixed-bottom navbar-light bg-light width-button-bar">
+        <div class="row w-100 bottom-button-bar">
+            <div class="col-sm center-txt"><b onclick='window.location="tab01news.html"'>News<br><span class="icon-font">&#x1f4f0;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab02map.html"'>Map<br><span class="icon-font">&#x1f4cc;</span></b>
+            </div>
+            <div class="col-sm center-txt"><b onclick='window.location="tab03todo.html"'>Todo<br><span class="icon-font">&#x1F4DD;</span></b>
+            </div>
+            <div class="col-sm center-txt button-selected"><b onclick='window.location="tab04project.html"'>Search Jobs<br><span class="icon-font">&#x1F981;</span></b>
+            </div>
+        </div>
+    </nav>
+</BODY>
+<!-- carga de scripts do Bootstrap, JQuery, Popper -->
+    <!--
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+-->>
+</HTML>
